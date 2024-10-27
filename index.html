@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Map of US</h2>
+
+    <div id="map"></div>
+
+    <h2 id="m1Coords"></h2>
+    <h4 id="m1Local">Locality:</h4>
+
+    
+    <h2 id="m2Coords"></h2>
+    <h4 id="m2Local">Locality:</h4>
+
+    
+    <h2 id="m3Coords"></h2>
+    <h4 id="m3Local">Locality:</h4>
+
+
+    <script>
+        function getRandomInRange(from, to, fixed) {
+            return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+        }
+
+        var map = L.map('map').setView([40, -100], 4.4);
+
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        let m1lon = getRandomInRange(-90, -100, 3);
+        let m2lon = getRandomInRange(-90, -100, 3);
+        let m3lon = getRandomInRange(-90, -100, 3);
+
+        let m1lan = getRandomInRange(30, 35, 3);
+        let m2lan = getRandomInRange(30, 35, 3);
+        let m3lan = getRandomInRange(30, 35, 3);
+        document.getElementById('m1Coords').textContent = 'Marker 1: ' + 'Latitude: ' + m1lan + ', Longitude: ' + m1lon;
+        document.getElementById('m2Coords').textContent = 'Marker 2: ' + 'Latitude: ' + m2lan + ', Longitude: ' + m2lon;
+        document.getElementById('m3Coords').textContent = 'Marker 3: ' + 'Latitude: ' + m3lan + ', Longitude: ' + m3lon;
+
+
+
+        let marker1 = L.marker([m1lan, m1lon]).addTo(map);
+        let marker2 = L.marker([m2lan, m2lon]).addTo(map);
+        let marker3 = L.marker([m3lan, m3lon]).addTo(map);
+
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${m1lan}&longitude=${m1lon}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('m1Local').textContent = `Locality: ${data.locality}`;
+            });
+
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${m2lan}&longitude=${m2lon}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('m2Local').textContent = `Locality: ${data.locality}`;
+            });
+
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${m3lan}&longitude=${m3lon}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('m3Local').textContent = `Locality: ${data.locality}`;
+            });
+
+
+    </script>
+</body>
+
+</html>
